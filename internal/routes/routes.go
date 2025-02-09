@@ -2,21 +2,19 @@ package routes
 
 import (
 	"app/internal/handlers"
-	"net/http"
-
 	"app/internal/middleware"
+	"net/http"
 )
 
 // Routes is the function that contains all the routes for the application
 func SetupRoutes() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	// Public Routes
-	mux.HandleFunc("/public", handlers.PublicHandler)
+	mux.Handle("/api/v1/auth/", handlers.AuthMux())
 
-	// Private route wrapped with auth middleware
-	privateHandler := middleware.AuthMiddleware(http.HandlerFunc(handlers.PrivateHandler))
-	mux.Handle("/private", privateHandler)
+	protectedMux := middleware.AuthMiddleware(handlers.ProtectedMux())
+	protectedGroup := http.StripPrefix("/api/v1/protected", protectedMux)
+	mux.Handle("/api/v1/protected/", protectedGroup)
 
 	return mux
 }

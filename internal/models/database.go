@@ -1,11 +1,6 @@
 package models
 
-// Generic configuration models for the application
-
-type Config struct {
-	Database DatabaseConfig
-}
-
+// DatabaseConfig holds the configuration for the database
 type DatabaseConfig struct {
 	Host     string
 	Port     string
