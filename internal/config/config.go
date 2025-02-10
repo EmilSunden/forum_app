@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -14,6 +15,31 @@ func LoadEnv() {
 	}
 }
 
-func GetPort() string {
-	return ":8080"
+type JWTSecretKey struct {
+	JWTSecretKey string
+}
+
+type Port struct {
+	Port string
+}
+
+func LoadJWTSecretFromEnv() JWTSecretKey {
+	return JWTSecretKey{
+		JWTSecretKey: os.Getenv("JWT_SECRET"),
+	}
+}
+
+func (jwt JWTSecretKey) GetJWTSecret() string {
+	return jwt.JWTSecretKey
+}
+
+func LoadPortFromEnv() Port {
+	return Port{
+		Port: os.Getenv("PORT"),
+	}
+
+}
+
+func (port Port) GetPort() string {
+	return port.Port
 }
