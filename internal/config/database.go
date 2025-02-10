@@ -13,31 +13,26 @@ type DatabaseConfig struct {
 func NewDatabaseConfigFromEnv() DatabaseConfig {
 	return DatabaseConfig{
 		DatabaseConfig: models.DatabaseConfig{
-			Host:     os.Getenv("DB_HOST"),
-			Port:     os.Getenv("DB_PORT"),
-			Username: os.Getenv("DB_USERNAME"),
-			Password: os.Getenv("DB_PASSWORD"),
-			Database: os.Getenv("DB_DATABASE"),
+			PostgresDB:   os.Getenv("POSTGRES_DATABASE"),
+			PostgresUser: os.Getenv("POSTGRES_USER"),
+			PostgresPass: os.Getenv("POSTGRES_PASSWORD"),
+			PostgresPort: os.Getenv("POSTGRES_PORT"),
 		},
 	}
 }
 
-func (config DatabaseConfig) GetHost() string {
-	return config.DatabaseConfig.Host
+func (config DatabaseConfig) GetPostgres() string {
+	return config.DatabaseConfig.PostgresDB
 }
 
-func (config DatabaseConfig) GetPort() string {
-	return config.DatabaseConfig.Port
+func (config DatabaseConfig) GetPostgresUser() string {
+	return config.DatabaseConfig.PostgresUser
 }
 
-func (config DatabaseConfig) GetUsername() string {
-	return config.DatabaseConfig.Username
+func (config DatabaseConfig) GetPostgresPass() string {
+	return config.DatabaseConfig.PostgresPass
 }
 
-func (config DatabaseConfig) GetPassword() string {
-	return config.DatabaseConfig.Password
-}
-
-func (config DatabaseConfig) GetDatabase() string {
-	return config.DatabaseConfig.Database
+func (config DatabaseConfig) GetPostgresPort() string {
+	return config.DatabaseConfig.PostgresPort
 }

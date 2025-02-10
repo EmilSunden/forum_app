@@ -2,9 +2,8 @@ package models
 
 // DatabaseConfig holds the configuration for the database
 type DatabaseConfig struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
-	Database string
+	PostgresDB   string
+	PostgresUser string
+	PostgresPass string
+	PostgresPort string
 }
