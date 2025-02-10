@@ -2,6 +2,7 @@ package auth
 
 import (
 	"app/internal/config"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -10,11 +11,14 @@ func generateJWT(user string) string {
 	// Get secret key
 	secret := config.LoadJWTSecretFromEnv().GetJWTSecret()
 	// Create the Claims
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["user"] = user
+	claims := jwt.MapClaims{
+		"iss": "streaming_forum_app",
+		"sub": user,
+		"exp": 15000,
+		"iat": time.Now().Unix(),
+	}
 
-	token := jwt.New(jwt.SigningMethodHS256)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, _ := token.SignedString([]byte(secret))
 	return signedToken
 }
