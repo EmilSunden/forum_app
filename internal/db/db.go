@@ -24,11 +24,11 @@ func InitializeGormDB() (*gorm.DB, error) {
 		return nil, fmt.Errorf("invalid port: %s", portStr)
 	}
 
-	dsn := fmt.Sprintf(
+	connectionString := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbName,
 	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
