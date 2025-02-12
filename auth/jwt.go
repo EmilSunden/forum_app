@@ -8,12 +8,13 @@ import (
 )
 
 func GenerateJWT(user string) (string, error) {
-	// Get secret key
+	// Load secret key
 	jwtConfig := config.LoadJWTConfigFromEnv()
+	// Get the secret key
 	secret := jwtConfig.GetJWTSecret()
 	// Create the Claims
 	claims := jwt.MapClaims{
-		"iss": "streaming_forum_app",
+		"iss": "stream-mix",
 		"sub": user,
 		"exp": 15000,
 		"iat": time.Now().Unix(),
@@ -25,11 +26,15 @@ func GenerateJWT(user string) (string, error) {
 }
 
 func ValidateJWT(tokenString string) bool {
+	// Load secret key
 	jwtConfig := config.LoadJWTConfigFromEnv()
+	// Get the secret key
 	secret := jwtConfig.GetJWTSecret()
+	// Parse the token
 	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
 	})
+	// Check if the token is valid
 	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		return true
 	}
