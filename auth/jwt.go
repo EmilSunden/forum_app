@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func generateJWT(user string) string {
+func GenerateJWT(user string) (string, error) {
 	// Get secret key
 	secret := config.LoadJWTSecretFromEnv().GetJWTSecret()
 	// Create the Claims
@@ -20,10 +20,10 @@ func generateJWT(user string) string {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, _ := token.SignedString([]byte(secret))
-	return signedToken
+	return signedToken, nil
 }
 
-func validateJWT(tokenString string) bool {
+func ValidateJWT(tokenString string) bool {
 	secret := config.LoadJWTSecretFromEnv().GetJWTSecret()
 	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil

@@ -12,8 +12,8 @@ func AuthMux(db *gorm.DB) http.Handler {
 	// Auth logic here
 	authMux := http.NewServeMux()
 	authMux.Handle("/signup", Post(controllers.SignupController(db)))
-	authMux.Handle("/login", http.HandlerFunc(controllers.LoginController))
-	authMux.Handle("/logout", http.HandlerFunc(controllers.LogoutController))
+	authMux.Handle("/login", Post(controllers.LoginController(db)))
+	authMux.Handle("/logout", controllers.LogoutController())
 
 	return http.StripPrefix("/api/v1/auth", authMux)
 }

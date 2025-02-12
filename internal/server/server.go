@@ -19,7 +19,7 @@ func Start() error {
 	if err != nil {
 		return fmt.Errorf("failed to initialize database: %w", err)
 	}
-	mux := routes.SetupRoutes(db)
+	mux := routes.Routes(db)
 
 	log.Printf("Server is listening on port %s", addr)
 	return http.ListenAndServe(addr, mux)

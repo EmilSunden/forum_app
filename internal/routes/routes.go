@@ -9,7 +9,7 @@ import (
 )
 
 // Routes is the function that contains all the routes for the application
-func SetupRoutes(db *gorm.DB) *http.ServeMux {
+func Routes(db *gorm.DB) *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.Handle("/api/v1/auth/", handlers.AuthMux(db))

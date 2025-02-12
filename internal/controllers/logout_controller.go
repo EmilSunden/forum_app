@@ -1,15 +1,22 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
+	"time"
 )
 
-func LogoutController(w http.ResponseWriter, r *http.Request) {
-	// LogoutController is the function that handles the logout logic for the application
-	// Logout logic here
-	response := map[string]string{"message": "This is the logout endpoint"}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
-	w.Write([]byte("LogoutController"))
+func LogoutController() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set the token cookie with an expired date to effectively log the user out
+		http.SetCookie(w, &http.Cookie{
+			Name:     "token",
+			Value:    "",
+			HttpOnly: true,
+			Secure:   true,
+			Path:     "/",
+			Expires:  time.Unix(0, 0),
+		})
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Logged out successfully"))
+	})
 }

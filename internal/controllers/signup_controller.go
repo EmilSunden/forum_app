@@ -11,48 +11,35 @@ import (
 	"gorm.io/gorm"
 )
 
-type SignupInput struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 func SignupController(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// SignupController is the function that handles the signup logic for the application
-		// Signup logic here
-		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		}
-
-		var input SignupInput                          // Create a variable to hold the input
-		decoder := json.NewDecoder(r.Body)             // Create a decoder to parse the JSON from the request body
-		if err := decoder.Decode(&input); err != nil { // Decode the JSON into the input variable
+		authRequest := models.AuthRequest{}
+		// Create a variable to hold the input
+		decoder := json.NewDecoder(r.Body)                   // Create a decoder to parse the JSON from the request body
+		if err := decoder.Decode(&authRequest); err != nil { // Decode the JSON into the input variable
 			http.Error(w, "Invalid input", http.StatusBadRequest)
 			return
 		}
 
 		// Basic validation: ensurer both username and password are provided
-		if input.Username == "" || input.Password == "" {
+		if authRequest.Username == "" || authRequest.Password == "" {
 			http.Error(w, "Bad request: unable to parse JSON", http.StatusBadRequest)
 			return
 		}
 
-		// TODO: Add additional validation, passowrd hasing, and user creation logic here
-		// For example, check if the user already exists, hash the password, and store the user in the database
-
 		// Check if user already exists
-		exists, err := services.UserExists(db, input.Username)
+		userExists, err := services.GetUserByUsername(db, authRequest.Username)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		if exists {
+		if userExists != nil {
 			http.Error(w, "User already exists", http.StatusBadRequest)
 			return
 		}
 
 		// Hash the password
-		hashedPassword, err := auth.HashPassword(input.Password)
+		hashedPassword, err := auth.HashPassword(authRequest.Password)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
@@ -60,7 +47,7 @@ func SignupController(db *gorm.DB) http.HandlerFunc {
 
 		// Create the user
 		user := models.User{
-			Username: input.Username,
+			Username: authRequest.Username,
 			Password: hashedPassword,
 		}
 
@@ -70,7 +57,7 @@ func SignupController(db *gorm.DB) http.HandlerFunc {
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprintf(w, "User %s created successfully", input.Username)
+		fmt.Fprintf(w, "User %s created successfully", authRequest.Username)
 
 	}
 }

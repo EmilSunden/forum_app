@@ -7,19 +7,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func UserExists(db *gorm.DB, username string) (bool, error) {
-	var user models.User
+func GetUserByUsername(db *gorm.DB, username string) (*models.User, error) {
+	user := models.User{}
 
-	// Try to find the first record with the matching username.
+	// Try to find the first record with the matching username
 	err := db.Where("username = ?", username).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			// No record found, so user does not exist
-			return false, nil
+			return nil, nil
 		}
-		return false, err
+		return nil, err
 	}
-
 	// Record found, so user exists
-	return true, nil
+	return &user, nil
 }
