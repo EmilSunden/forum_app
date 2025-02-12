@@ -1,7 +1,10 @@
 {
     "cSpell.words": [
+        "dbname",
         "godotenv",
+        "gorm",
         "Signup",
-        "Signupcontroller"
+        "Signupcontroller",
+        "sslmode"
     ]
 }

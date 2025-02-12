@@ -1,8 +1,11 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type User struct {
-	Username       string
-	ProfilePicture ProfilePicture
+	gorm.Model
+	Username string `gorm:"unique;not null"`
+	Password string `gorm:"not null"`
 }
 
 type ProfilePicture struct {

@@ -13,12 +13,17 @@ type DatabaseConfig struct {
 func NewDatabaseConfigFromEnv() DatabaseConfig {
 	return DatabaseConfig{
 		DatabaseConfig: models.DatabaseConfig{
+			PostgresHost: os.Getenv("POSTGRES_HOST"),
 			PostgresDB:   os.Getenv("POSTGRES_DATABASE"),
 			PostgresUser: os.Getenv("POSTGRES_USER"),
 			PostgresPass: os.Getenv("POSTGRES_PASSWORD"),
 			PostgresPort: os.Getenv("POSTGRES_PORT"),
 		},
 	}
+}
+
+func (config DatabaseConfig) GetPostgresHost() string {
+	return config.DatabaseConfig.PostgresHost
 }
 
 func (config DatabaseConfig) GetPostgres() string {

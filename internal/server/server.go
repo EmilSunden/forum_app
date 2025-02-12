@@ -2,6 +2,7 @@ package server
 
 import (
 	"app/internal/config"
+	"app/internal/db"
 	"app/internal/routes"
 	"fmt"
 	"log"
@@ -10,9 +11,16 @@ import (
 
 func Start() error {
 	config.LoadEnv()
-	mux := routes.SetupRoutes()
-	port := config.LoadPortFromEnv().GetPort()
+	portConf := config.LoadPortFromEnv()
+	port := portConf.GetPort()
 	addr := fmt.Sprintf(":%s", port)
+	// initialize DB
+	db, err := db.InitializeGormDB()
+	if err != nil {
+		return fmt.Errorf("failed to initialize database: %w", err)
+	}
+	mux := routes.SetupRoutes(db)
+
 	log.Printf("Server is listening on port %s", addr)
 	return http.ListenAndServe(addr, mux)
 }
