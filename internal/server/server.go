@@ -11,9 +11,10 @@ import (
 
 func Start() error {
 	config.LoadEnv()
-	portConf := config.LoadPortFromEnv()
+	portConf := config.LoadServerConfigFromEnv()
 	port := portConf.GetPort()
 	addr := fmt.Sprintf(":%s", port)
+
 	// initialize DB
 	db, err := db.InitializeGormDB()
 	if err != nil {

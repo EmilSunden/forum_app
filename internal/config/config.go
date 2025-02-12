@@ -15,31 +15,33 @@ func LoadEnv() {
 	}
 }
 
-type JWTSecretKey struct {
-	JWTSecretKey string
+// JWTConfig holds the JWT secret key
+type JWTConfig struct {
+	Secret string
 }
 
-type Port struct {
+type ServerConfig struct {
 	Port string
 }
 
-func LoadJWTSecretFromEnv() JWTSecretKey {
-	return JWTSecretKey{
-		JWTSecretKey: os.Getenv("JWT_SECRET"),
+// LoadJWTConfigFromEnv loads the JWT secret key from the environment variables
+func LoadJWTConfigFromEnv() JWTConfig {
+	return JWTConfig{
+		Secret: os.Getenv("JWT_SECRET"),
 	}
 }
 
-func (jwt JWTSecretKey) GetJWTSecret() string {
-	return jwt.JWTSecretKey
+func (config JWTConfig) GetJWTSecret() string {
+	return config.Secret
 }
 
-func LoadPortFromEnv() Port {
-	return Port{
+func LoadServerConfigFromEnv() ServerConfig {
+	return ServerConfig{
 		Port: os.Getenv("PORT"),
 	}
 
 }
 
-func (port Port) GetPort() string {
-	return port.Port
+func (config ServerConfig) GetPort() string {
+	return config.Port
 }

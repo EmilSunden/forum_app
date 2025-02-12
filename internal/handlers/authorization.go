@@ -9,10 +9,9 @@ import (
 
 func AuthMux(db *gorm.DB) http.Handler {
 	// AuthMux is the function that contains the authorization logic for the application
-	// Auth logic here
 	authMux := http.NewServeMux()
-	authMux.Handle("/signup", Post(controllers.SignupController(db)))
-	authMux.Handle("/login", Post(controllers.LoginController(db)))
+	authMux.Handle("/signup", controllers.SignupController(db))
+	authMux.Handle("/login", controllers.LoginController(db))
 	authMux.Handle("/logout", controllers.LogoutController())
 
 	return http.StripPrefix("/api/v1/auth", authMux)

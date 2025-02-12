@@ -9,7 +9,8 @@ import (
 
 func GenerateJWT(user string) (string, error) {
 	// Get secret key
-	secret := config.LoadJWTSecretFromEnv().GetJWTSecret()
+	jwtConfig := config.LoadJWTConfigFromEnv()
+	secret := jwtConfig.GetJWTSecret()
 	// Create the Claims
 	claims := jwt.MapClaims{
 		"iss": "streaming_forum_app",
@@ -24,7 +25,8 @@ func GenerateJWT(user string) (string, error) {
 }
 
 func ValidateJWT(tokenString string) bool {
-	secret := config.LoadJWTSecretFromEnv().GetJWTSecret()
+	jwtConfig := config.LoadJWTConfigFromEnv()
+	secret := jwtConfig.GetJWTSecret()
 	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
 	})
