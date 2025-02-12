@@ -1,17 +1,17 @@
-package controllers
+package auth_handlers
 
 import (
 	"app/auth"
 	"app/internal/models"
 	"app/internal/services"
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"time"
 
 	"gorm.io/gorm"
 )
 
-func LoginController(db *gorm.DB) http.HandlerFunc {
+func Signup(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authRequest := models.AuthRequest{}
 		// Create a variable to hold the input
@@ -26,42 +26,38 @@ func LoginController(db *gorm.DB) http.HandlerFunc {
 			http.Error(w, "Bad request: unable to parse JSON", http.StatusBadRequest)
 			return
 		}
-		// Get user by username
-		user, err := services.GetUserByUsername(db, authRequest.Username)
 
+		// Check if user already exists
+		userExists, err := services.GetUserByUsername(db, authRequest.Username)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		if userExists != nil {
+			http.Error(w, "User already exists", http.StatusBadRequest)
+			return
+		}
+
+		// Hash the password
+		hashedPassword, err := auth.HashPassword(authRequest.Password)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		if user == nil {
-			http.Error(w, "User does not exist", http.StatusBadRequest)
+		// Create the user
+		user := models.User{
+			Username: authRequest.Username,
+			Password: hashedPassword,
+		}
+
+		if err := db.Create(&user).Error; err != nil {
+			http.Error(w, "Failed to create user", http.StatusInternalServerError)
 			return
 		}
 
-		// Validate the password
-		if !auth.ValidatePassword(user.Password, authRequest.Password) {
-			http.Error(w, "Invalid password", http.StatusBadRequest)
-			return
-		}
-
-		// Generate a JWT token for the user
-		token, err := auth.GenerateJWT(user.Username)
-		if err != nil {
-			http.Error(w, "Failed to generate token", http.StatusInternalServerError)
-			return
-		}
-
-		http.SetCookie(w, &http.Cookie{
-			Name:     "token",
-			Value:    token,
-			HttpOnly: true,
-			Secure:   true,
-			Path:     "/",
-			MaxAge:   int((time.Hour * 24).Seconds()),
-		})
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "User logged in successfully"})
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprintf(w, "User %s created successfully", authRequest.Username)
 
 	}
 }

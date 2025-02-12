@@ -1,11 +1,11 @@
-package controllers
+package auth_handlers
 
 import (
 	"net/http"
 	"time"
 )
 
-func LogoutController() http.HandlerFunc {
+func Logout() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set the token cookie with an expired date to effectively log the user out
 		http.SetCookie(w, &http.Cookie{
