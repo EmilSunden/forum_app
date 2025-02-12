@@ -20,6 +20,7 @@ type JWTConfig struct {
 	Secret string
 }
 
+// ServerConfig holds the server port
 type ServerConfig struct {
 	Port string
 }
@@ -31,10 +32,12 @@ func LoadJWTConfigFromEnv() JWTConfig {
 	}
 }
 
+// GetJWTSecret returns the JWT secret key
 func (config JWTConfig) GetJWTSecret() string {
 	return config.Secret
 }
 
+// LoadServerConfigFromEnv loads the server configuration from the environment variables
 func LoadServerConfigFromEnv() ServerConfig {
 	return ServerConfig{
 		Port: os.Getenv("PORT"),
@@ -42,6 +45,7 @@ func LoadServerConfigFromEnv() ServerConfig {
 
 }
 
+// GetPort returns the server port
 func (config ServerConfig) GetPort() string {
 	return config.Port
 }
