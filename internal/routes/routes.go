@@ -14,7 +14,7 @@ func Routes(db *gorm.DB) *http.ServeMux {
 
 	mux.Handle("/api/v1/auth/", handlers.AuthMux(db))
 
-	protectedMux := middleware.AuthMiddleware(handlers.ProtectedMux())
+	protectedMux := middleware.AuthMiddleware(db)(handlers.ProtectedMux())
 	protectedGroup := http.StripPrefix("/api/v1/protected", protectedMux)
 	mux.Handle("/api/v1/protected/", protectedGroup)
 

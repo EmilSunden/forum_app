@@ -46,7 +46,7 @@ func Login(db *gorm.DB) http.HandlerFunc {
 		}
 
 		// Generate a JWT token for the user
-		token, err := auth.GenerateJWT(user.Username)
+		token, err := auth.GenerateJWT(int64(user.ID), user.Username)
 		if err != nil {
 			http.Error(w, "Failed to generate token", http.StatusInternalServerError)
 			return

@@ -28,7 +28,7 @@ func Signup(db *gorm.DB) http.HandlerFunc {
 		}
 
 		// Check if user already exists
-		userExists, err := services.GetUserByUsername(db, authRequest.Username)
+		userExists, err := services.GetUserByID(db, int64(authRequest.ID))
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return

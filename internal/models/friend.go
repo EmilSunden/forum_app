@@ -5,8 +5,8 @@ import "github.com/jinzhu/gorm"
 // FriendRequest represents a pending (or resolved) friend request.
 type FriendRequest struct {
 	gorm.Model
-	RequesterID int    `json:"requester_id"`
-	ReceiverID  int    `json:"receiver_id"`
+	RequesterID int64  `json:"requester_id"`
+	ReceiverID  int64  `json:"receiver_id"`
 	Status      string `json:"status"`
 	Message     string `json:"message"`
 }
