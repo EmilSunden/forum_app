@@ -33,7 +33,7 @@ func InitializeGormDB() (*gorm.DB, error) {
 		log.Fatal("Failed to connect to the database:", err)
 	}
 
-	err = migrateModels(db, &models.User{})
+	err = migrateModels(db, &models.User{}, &models.FriendRequest{})
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to migrate models: %w", err)
