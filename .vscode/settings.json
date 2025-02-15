@@ -3,6 +3,7 @@
         "dbname",
         "dtos",
         "friendhandlers",
+        "friendrequest",
         "godotenv",
         "gorm",
         "Signup",

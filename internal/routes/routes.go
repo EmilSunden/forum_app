@@ -24,6 +24,7 @@ func Routes(db *gorm.DB) *gin.Engine {
 	protectedGroup.Use(middleware.AuthMiddleware(db))
 	{
 		protectedGroup.POST("/friend-request", handlers.CreateFriendRequest(db))
+		protectedGroup.POST("/friend-request/handle", handlers.HandleFriendRequest(db))
 	}
 
 	return router

@@ -28,3 +28,38 @@ func (r *FriendRequestRepository) Exists(requesterID, receiverID int64) (bool, e
 func (r *FriendRequestRepository) Create(fr *models.FriendRequest) error {
 	return r.db.Create(fr).Error
 }
+
+// HandleFriendRequest handles a friendrequest by the user either accepting or declining the request.
+func (r *FriendRequestRepository) HandleFriendRequest(requesterID, receiverID int64) (*models.FriendRequest, error) {
+	var friendRequest models.FriendRequest
+	err := r.db.Where("requester_id = ? AND receiver_id = ?", requesterID, receiverID).First(&friendRequest).Error
+	if err != nil {
+		return nil, err
+	}
+	return &friendRequest, nil
+}
+
+// Notify sends a notification to the user.
+func (r *FriendRequestRepository) Notify(userID int64, message string) error {
+	// Send a notification to the user
+	return nil
+}
+
+// Delete deletes a friend request.
+func (r *FriendRequestRepository) Delete(fr *models.FriendRequest) error {
+	return r.db.Delete(fr).Error
+}
+
+// CreateFriendshipEntry creates a new friendship entry.
+func (r *FriendRequestRepository) CreateFriendshipEntry(userID, friendUserID int64) error {
+	fe := models.FriendshipEntry{
+		UserID:       int(userID),
+		FriendUserID: int(friendUserID),
+	}
+	return r.db.Create(&fe).Error
+}
+
+// Update updates the friend request status.
+func (r *FriendRequestRepository) Update(fr *models.FriendRequest) error {
+	return r.db.Save(fr).Error
+}
