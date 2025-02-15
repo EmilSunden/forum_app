@@ -2,7 +2,7 @@ package app
 
 import (
 	"app/internal/config"
-	"app/internal/db"
+	"app/internal/psql"
 	"app/internal/routes"
 	"fmt"
 	"log"
@@ -16,7 +16,7 @@ func App() error {
 	addr := fmt.Sprintf(":%s", port)
 
 	// initialize DB
-	db, err := db.InitializeGormDB()
+	db, err := psql.InitializeGormDB()
 	if err != nil {
 		return fmt.Errorf("failed to initialize database: %w", err)
 	}

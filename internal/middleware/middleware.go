@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"app/internal/auth"
-	contextKeys "app/internal/contextkeys"
-	"app/internal/services"
+	"app/internal/context"
+	"app/internal/users"
+
 	"net/http"
 	"strconv"
 
@@ -48,7 +49,7 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		// Get the user from the database using the user ID
-		user, err := services.GetUserByID(db, userID)
+		user, err := users.GetUserByID(db, userID)
 		if err != nil || user == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
@@ -56,7 +57,7 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		// Store the user in context using our defined key.
-		c.Set(string(contextKeys.UserKey), user)
+		c.Set(string(context.UserKey), user)
 
 		// Token is valid, proceed to the next handler
 		c.Next()

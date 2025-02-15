@@ -5,9 +5,13 @@
         "friendhandlers",
         "friendrequest",
         "godotenv",
+        "gonic",
         "gorm",
+        "myapp",
+        "psql",
         "Signup",
         "Signupcontroller",
-        "sslmode"
+        "sslmode",
+        "zerolog"
     ]
 }
