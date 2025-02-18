@@ -1,4 +1,4 @@
-package friends
+package dtos
 
 import "gorm.io/gorm"
 

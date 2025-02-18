@@ -1,13 +1,14 @@
-package users
+package dal
 
 import (
+	"app/internal/models"
 	"errors"
 
 	"gorm.io/gorm"
 )
 
-func GetUserByID(db *gorm.DB, userID int64) (*User, error) {
-	user := User{}
+func GetUserByID(db *gorm.DB, userID int64) (*models.User, error) {
+	user := models.User{}
 
 	// Try to find the first record with the matching username
 	err := db.Where("id= ?", userID).First(&user).Error
@@ -22,8 +23,8 @@ func GetUserByID(db *gorm.DB, userID int64) (*User, error) {
 	return &user, nil
 }
 
-func GetUserByUsername(db *gorm.DB, username string) (*User, error) {
-	user := User{}
+func GetUserByUsername(db *gorm.DB, username string) (*models.User, error) {
+	user := models.User{}
 
 	// Try to find the first record with the matching username
 	err := db.Where("username = ?", username).First(&user).Error

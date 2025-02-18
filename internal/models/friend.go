@@ -1,6 +1,6 @@
-package friends
+package models
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 // FriendRequest represents a pending (or resolved) friend request.
 type FriendRequest struct {

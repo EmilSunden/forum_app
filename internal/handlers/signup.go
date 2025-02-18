@@ -1,7 +1,10 @@
-package auth
+package handlers
 
 import (
-	"app/internal/users"
+	"app/internal/auth"
+	"app/internal/dtos"
+	"app/internal/models"
+	"app/internal/services"
 	"fmt"
 	"net/http"
 
@@ -11,7 +14,7 @@ import (
 
 func Signup(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var authRequest AuthRequest
+		var authRequest dtos.AuthRequest
 		if err := c.ShouldBindJSON(&authRequest); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 			return
@@ -22,7 +25,8 @@ func Signup(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		userExists, err := users.GetUserByID(db, int64(authRequest.ID))
+		userService := services.NewUserService(db)
+		userExists, err := userService.GetUserByID(int64(authRequest.ID))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 			return
@@ -32,13 +36,13 @@ func Signup(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		hashedPassword, err := HashPassword(authRequest.Password)
+		hashedPassword, err := auth.HashPassword(authRequest.Password)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 			return
 		}
 
-		user := users.User{
+		user := models.User{
 			Username: authRequest.Username,
 			Password: hashedPassword,
 		}

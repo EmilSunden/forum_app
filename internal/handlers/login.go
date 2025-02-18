@@ -1,7 +1,9 @@
-package auth
+package handlers
 
 import (
-	"app/internal/users"
+	"app/internal/auth"
+	"app/internal/dtos"
+	"app/internal/services"
 	"net/http"
 	"time"
 
@@ -11,7 +13,7 @@ import (
 
 func Login(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authRequest := AuthRequest{}
+		authRequest := dtos.AuthRequest{}
 		// Bind the JSON from the request body to the input variable
 		if err := c.ShouldBindJSON(&authRequest); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
@@ -25,7 +27,9 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		// Get user by username
-		user, err := users.GetUserByUsername(db, authRequest.Username)
+
+		userService := services.NewUserService(db)
+		user, err := userService.GetUserByUsername(authRequest.Username)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 			return
@@ -37,13 +41,13 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		// Validate the password
-		if !ValidatePassword(user.Password, authRequest.Password) {
+		if !auth.ValidatePassword(user.Password, authRequest.Password) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid password"})
 			return
 		}
 
 		// Generate a JWT token for the user
-		token, err := GenerateJWT(int64(user.ID), user.Username)
+		token, err := auth.GenerateJWT(int64(user.ID), user.Username)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return

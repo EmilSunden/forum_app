@@ -1,6 +1,6 @@
-package auth
+package dtos
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 type AuthRequest struct {
 	gorm.Model

@@ -3,7 +3,7 @@ package middleware
 import (
 	"app/internal/auth"
 	"app/internal/context"
-	"app/internal/users"
+	"app/internal/dal"
 
 	"net/http"
 	"strconv"
@@ -49,7 +49,7 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		// Get the user from the database using the user ID
-		user, err := users.GetUserByID(db, userID)
+		user, err := dal.GetUserByID(db, userID)
 		if err != nil || user == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()

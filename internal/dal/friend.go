@@ -1,6 +1,8 @@
-package friends
+package dal
 
 import (
+	"app/internal/models"
+
 	"gorm.io/gorm"
 )
 
@@ -15,7 +17,7 @@ func NewFriendRequest(db *gorm.DB) *FriendRequestDataLayer {
 // Exists checks if a friend request already exists between two users.
 func (r *FriendRequestDataLayer) Exists(requesterID, receiverID int64) (bool, error) {
 	var count int64
-	err := r.db.Model(&FriendRequest{}).Where("requester_id = ? And receiver_id = ?", requesterID, receiverID).Count(&count).Error
+	err := r.db.Model(&models.FriendRequest{}).Where("requester_id = ? And receiver_id = ?", requesterID, receiverID).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
@@ -23,13 +25,13 @@ func (r *FriendRequestDataLayer) Exists(requesterID, receiverID int64) (bool, er
 }
 
 // Create creates a new friend request.
-func (r *FriendRequestDataLayer) Create(fr *FriendRequest) error {
+func (r *FriendRequestDataLayer) Create(fr *models.FriendRequest) error {
 	return r.db.Create(fr).Error
 }
 
 // HandleFriendRequest handles a friendrequest by the user either accepting or declining the request.
-func (r *FriendRequestDataLayer) HandleFriendRequest(requesterID, receiverID int64) (*FriendRequest, error) {
-	var friendRequest FriendRequest
+func (r *FriendRequestDataLayer) HandleFriendRequest(requesterID, receiverID int64) (*models.FriendRequest, error) {
+	var friendRequest models.FriendRequest
 	err := r.db.Where("requester_id = ? AND receiver_id = ?", requesterID, receiverID).First(&friendRequest).Error
 	if err != nil {
 		return nil, err
@@ -43,13 +45,13 @@ func (r *FriendRequestDataLayer) Notify(userID int64, message string) error {
 }
 
 // Delete deletes a friend request.
-func (r *FriendRequestDataLayer) Delete(fr *FriendRequest) error {
+func (r *FriendRequestDataLayer) Delete(fr *models.FriendRequest) error {
 	return r.db.Delete(fr).Error
 }
 
 // CreateFriendshipEntry creates a new friendship entry.
 func (r *FriendRequestDataLayer) CreateFriendshipEntry(userID, friendUserID int64) error {
-	fe := FriendshipEntry{
+	fe := models.FriendshipEntry{
 		UserID:       int(userID),
 		FriendUserID: int(friendUserID),
 	}
@@ -57,6 +59,6 @@ func (r *FriendRequestDataLayer) CreateFriendshipEntry(userID, friendUserID int6
 }
 
 // Update updates the friend request status.
-func (r *FriendRequestDataLayer) Update(fr *FriendRequest) error {
+func (r *FriendRequestDataLayer) Update(fr *models.FriendRequest) error {
 	return r.db.Save(fr).Error
 }
