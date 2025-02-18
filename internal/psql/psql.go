@@ -37,6 +37,7 @@ func InitializeGormDB() (*gorm.DB, error) {
 		db,
 		&models.User{},
 		&models.FriendRequest{},
+		&models.RequestLog{},
 	)
 
 	if err != nil {
